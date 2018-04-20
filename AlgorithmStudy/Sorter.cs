@@ -46,6 +46,24 @@ namespace AlgorithmStudy
             }
             return intArr;
         }
+        public static int[] InsertionSort(int[] intArr)
+        {
+            for (int i = 0; i < intArr.Length; i++)
+            {
+                int selected = intArr[i];
+                for (int n = i; n > 0; n--)
+                {
+                    int sample = intArr[n];
+                    if (selected<sample)
+                    {
+                        intArr[i] = sample;
+                        intArr[n] = selected;
+                        break;
+                    }
+                }
+            }
+            return intArr;
+        }
     }
     
 }
