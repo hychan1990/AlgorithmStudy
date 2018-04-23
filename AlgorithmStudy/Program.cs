@@ -13,13 +13,18 @@ namespace AlgorithmStudy
             Console.WriteLine(string.Join(",",Sorter.BubbleSort(TestingObject)));
             Console.WriteLine(string.Join(",", Sorter.SelectionSort(TestingObject)));
             Console.WriteLine(string.Join(",", Sorter.InsertionSort(TestingObject)));
-            string[,] starGrid = kMean.GenerateStarGrid(10, 10);
-            for (int i = 0; i < 10; i++)
+            List<star> listStar = kMean.generateStarGrid(10, 4);
+            for (int i = 0; i < listStar.Count; i++)
             {
-                Console.WriteLine();
-                for (int n = 0; n < 10; n++)
+                Console.WriteLine("stars: "+listStar[i].pos.ToString());
+            }
+            List<k> listK = kMean.kMeansAlgo(10, listStar, 2);
+            for (int i = 0; i < listK.Count; i++)
+            {
+                Console.WriteLine("k: "+listK[i].pos.ToString());
+                for (int n = 0; n < listK[i].children.Count; n++)
                 {
-                    Console.Write(starGrid[i,n]);
+                    Console.WriteLine(" children:" + listK[i].children[n].pos.ToString());
                 }
             }
             Console.Read();
