@@ -32,7 +32,6 @@ namespace AlgorithmStudy
     class star
     {
         public twoDimensionPostion pos;
-        public k parent;
         public star(twoDimensionPostion pos)
         {
             this.pos = pos;
@@ -41,38 +40,6 @@ namespace AlgorithmStudy
     static class kMean
     {
         static Random rand = new Random();
-        public static string[,] GenerateStarGrid(int SideLength,int density)
-        {
-            if (density>(SideLength*SideLength))
-            {
-                throw new Exception("density cannot more than size.");
-            }
-            string[,] starGrid = new string[SideLength, SideLength];
-            int size = SideLength * SideLength;
-            for (int i = 0; i < SideLength; i++)
-            {
-                for (int n = 0; n < SideLength; n++)
-                {
-                    starGrid.SetValue("口", i, n);
-                }
-            }
-
-            int done = 0;
-
-            while (done<density)
-            {
-                int randX = rand.Next(SideLength);
-                int randY = rand.Next(SideLength);
-                while (starGrid[randX,randY] != "口")//已有星
-                {
-                    randX = rand.Next(SideLength);
-                    randY = rand.Next(SideLength);
-                }
-                starGrid[randX,randY] = "ｘ";
-                done++;
-            }
-            return starGrid;
-        }
 
         public static List<star> generateStarGrid(int SideLength, int density)
         {
@@ -81,7 +48,6 @@ namespace AlgorithmStudy
                 throw new Exception("density cannot more than size.");
             }
             List<star> stars = new List<star>();
-            Random rand = new Random();
             while (stars.Count < density)
             {
                 twoDimensionPostion newPos = new twoDimensionPostion(rand.Next(SideLength), rand.Next(SideLength));
@@ -90,16 +56,8 @@ namespace AlgorithmStudy
             }
             return stars;
         }
-        public static List<k> kMeansAlgo(int SideLength,List<star> starGrid, int k)
+        public static List<k> kMeansAlgo(int SideLength,List<star> starGrid, List<k> ks, int k)
         {
-            List<k> ks = new List<k>();
-            for (int i = 0; i < k; i++)
-            {
-                int kx = rand.Next(SideLength);
-                int ky = rand.Next(SideLength);
-                twoDimensionPostion kp = new twoDimensionPostion(kx, ky);
-                ks.Add(new k(kp));
-            }
             //k have children, star have parent now.
             UpdateParentChildren(ref starGrid, ref ks);
             //compare new old
@@ -110,7 +68,21 @@ namespace AlgorithmStudy
                 MoveK(k, ks, ref haveChange);
                 UpdateParentChildren(ref starGrid, ref ks);
             } while (haveChange);
-                return ks;
+            return ks;
+        }
+
+        public static List<k> GenRandomK(int SideLength, int k)
+        {
+            List<k> ks = new List<k>();
+            for (int i = 0; i < k; i++)
+            {
+                int kx = rand.Next(SideLength);
+                int ky = rand.Next(SideLength);
+                twoDimensionPostion kp = new twoDimensionPostion(kx, ky);
+                ks.Add(new k(kp));
+            }
+
+            return ks;
         }
 
         private static void MoveK(int k, List<k> ks,ref bool haveChange)
@@ -154,17 +126,20 @@ namespace AlgorithmStudy
             //find nearest k of stars
             foreach (star star in starGrid)
             {
-                double shortestDist = double.MaxValue;
-                foreach (k k in ks)
+                //Dictionary<k, double> kDist = new Dictionary<k, double>();
+                List<k> kList = new List<k>();
+                List<double> distList = new List<double>();
+                foreach (k k in ks)//find nearest k
                 {
                     double dist = calDistance(star.pos, k.pos);
-                    if (dist<= shortestDist)
-                    {
-                        star.parent = k; //mark parent
-                        shortestDist = dist;
-                    }
+                    //kDist.Add(k, dist);
+                    kList.Add(k);
+                    distList.Add(dist);
                 }
-                star.parent.children.Add(star);
+                //k selectedK = kDist.Min(x => x.Key);
+                k selectedK = kList[distList.IndexOf(distList.Min())];
+                selectedK.children.Add(star);
+                
             }
         }
 
