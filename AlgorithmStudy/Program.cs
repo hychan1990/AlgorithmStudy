@@ -32,6 +32,7 @@ namespace AlgorithmStudy
                     Console.WriteLine(" children:" + listK[i].children[n].pos.ToString());
                 }
             }
+            Recursive.OnePlusN(100);
             Console.Read();
         }
     }
